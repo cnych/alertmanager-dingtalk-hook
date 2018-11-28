@@ -76,6 +76,14 @@ dingtalk-hook-c4fcd8cd6-6r2b6   1/1       Running     0          45m
 ......
 ```
 
-最后在`AlertManager`中 webhook 地址直接通过 DNS 形式访问即可：`http://dingtalk-hook.kube-ops.svc.cluster.local:5000`
+最后在`AlertManager`中 webhook 地址直接通过 DNS 形式访问即可：
+```yaml
+receivers:
+- name: 'webhook'
+  webhook_configs:
+  - url: 'http://dingtalk-hook.kube-ops.svc.cluster.local:5000'
+    send_resolved: true
+```
+
 
 
