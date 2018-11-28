@@ -85,5 +85,7 @@ receivers:
     send_resolved: true
 ```
 
-
+## 参考文档
+* [钉钉自定义机器人文档](https://open-doc.dingtalk.com/microapp/serverapi2/qf2nxq)
+* [AlertManager 的使用](https://www.qikqiak.com/k8s-book/docs/57.AlertManager%E7%9A%84%E4%BD%BF%E7%94%A8.html)
 
