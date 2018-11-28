@@ -1,4 +1,4 @@
-# alertmanager-dingtalk-hook :lemon: :tangerine: :cherries: :cake: :grapes: :watermelon: :strawberry: :corn: :peach: :melon:
+# alertmanager-dingtalk-hook :lemon: :tangerine: :cherries: :cake: :grapes: :watermelon: :strawberry: :corn: :peach:
 AlertManager 钉钉报警简单服务示例
 
 ![alertmanager dingtalk message demo](https://www.qikqiak.com/k8s-book/docs/images/alertmanager-dingtalk-message.png)
