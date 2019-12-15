@@ -65,7 +65,7 @@ def send_alert(data):
         "msgtype": "markdown",
         "markdown": {
             "title": title,
-            "text": title + "\n" + "![](https://bxdc-static.oss-cn-beijing.aliyuncs.com/images/prometheus-recording-rules.png)\n" + _mark_item(alerts[0]) + "\n" + "[点击查看完整信息]("+ external_url + ")\n"
+            "text": title + "\n" + "![](https://bxdc-static.oss-cn-beijing.aliyuncs.com/images/prometheus-recording-rules.png)\n" + _mark_item(alerts[0]) + "\n" + "[点击查看完整信息](" + external_url + ")\n"
         }
     }
 
