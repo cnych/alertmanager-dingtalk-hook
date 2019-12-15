@@ -1,29 +1,39 @@
 # alertmanager-dingtalk-hook :lemon: :tangerine: :cherries: :cake: :grapes: :watermelon: :strawberry: :corn: :peach:
 AlertManager 钉钉报警简单服务示例
 
-![alertmanager dingtalk message demo](https://www.qikqiak.com/k8s-book/docs/images/alertmanager-dingtalk-message.png)
+![alertmanager dingtalk message demo](https://bxdc-static.oss-cn-beijing.aliyuncs.com/images/dingtalk-hook-demo.png)
 
 ## 运行
 ### 使用`Docker`运行
 ```shell
-$ docker run -p 5000:5000 --name -e ROBOT_TOKEN=<钉钉机器人TOKEN> dingtalk-hook -d cnych/alertmanager-dingtalk-hook:v0.2
+$ docker run -p 5000:5000 --name -e ROBOT_TOKEN=<钉钉机器人TOKEN> -e ROBOT_SECRET=<钉钉机器人安全SECRET> -e LOG_LEVEL=debug -e PROME_URL=prometheus.local dingtalk-hook -d cnych/alertmanager-dingtalk-hook:v0.3.2
 ```
+
+如果需要设置跳转后的 Promethues 地址，可以设置 `PROME_URL` 环境变量。
+
+`secret` 为钉钉机器人的安全设置密钥，机器人安全设置页面，加签一栏下面显示的 SEC 开头的字符串。
+
+![dingtalk secret](https://dingtalkdoc.oss-cn-beijing.aliyuncs.com/images/0.0.184/1572261283991-f8e35f4d-6997-4a02-9704-843ee8f97464.png)
+
 
 ### 在`Kubernetes`集群中运行
 第一步建议将钉钉机器人TOKEN创建成`Secret`资源对象：
 ```shell
-$ kubectl create secret generic dingtalk-secret --from-literal=token=<钉钉群聊的机器人TOKEN> -n kube-ops
+$ kubectl create secret generic dingtalk-secret --from-literal=token=<钉钉群聊的机器人TOKEN> --from-literal=secret=<钉钉群聊机器人的SECRET> -n kube-ops
 secret "dingtalk-secret" created
 ```
 
 然后定义`Deployment`和`Service`资源对象：(dingtalk-hook.yaml)
 ```yaml
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: dingtalk-hook
   namespace: kube-ops
 spec:
+  selector:
+    matchLabels:
+      app: dingtalk-hook
   template:
     metadata:
       labels:
@@ -31,17 +41,26 @@ spec:
     spec:
       containers:
       - name: dingtalk-hook
-        image: cnych/alertmanager-dingtalk-hook:v0.2
+        image: cnych/alertmanager-dingtalk-hook:v0.3.2
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5000
           name: http
         env:
+        - name: PROME_URL
+          value: prometheus.local
+        - name: LOG_LEVEL
+          value: debug
         - name: ROBOT_TOKEN
           valueFrom:
             secretKeyRef:
               name: dingtalk-secret
               key: token
+        - name: ROBOT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: dingtalk-secret
+              key: secret
         resources:
           requests:
             cpu: 50m
@@ -68,7 +87,7 @@ spec:
 直接创建上面的资源对象即可：
 ```shell
 $ kubectl create -f dingtalk-hook.yaml
-deployment.extensions "dingtalk-hook" created
+deployment.apps "dingtalk-hook" created
 service "dingtalk-hook" created
 $ kubectl get pods -n kube-ops
 NAME                            READY     STATUS      RESTARTS   AGE
