@@ -43,7 +43,7 @@ def send_alert(data):
     url = 'https://oapi.dingtalk.com/robot/send?access_token=%s&timestamp=%d&sign=%s' % (token, timestamp, make_sign(timestamp, secret))
 
     alerts = data['alerts']
-    alert_name = data['groupLabels']['alertname']
+    alert_name = alerts[0]['alertname']['alertname']
 
     def _mark_item(alert):
         labels = alert['labels']
