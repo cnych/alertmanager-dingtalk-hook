@@ -53,7 +53,7 @@ def send_alert(data):
         if 'job' in labels:
             mark_item = "\n> job: " + labels['job'] + '\n\n' + annotations + '\n'
         else:
-            mark_item = "\n> " + annotations + '\n'
+            mark_item = annotations + '\n'
         return mark_item
 
     title = '%s 有 %d 条新的报警' % (alert_name, len(alerts))
