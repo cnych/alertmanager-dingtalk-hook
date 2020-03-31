@@ -43,14 +43,17 @@ def send_alert(data):
     url = 'https://oapi.dingtalk.com/robot/send?access_token=%s&timestamp=%d&sign=%s' % (token, timestamp, make_sign(timestamp, secret))
 
     alerts = data['alerts']
-    alert_name = alerts[0]['alertname']['alertname']
+    alert_name = alerts[0]['labels']['alertname']
 
     def _mark_item(alert):
         labels = alert['labels']
         annotations = "> "
         for k, v in alert['annotations'].items():
             annotations += "{0}: {1}\n".format(k, v)
-        mark_item = "\n> job: " + labels['job'] + '\n\n' + annotations + '\n'
+        if 'job' in labels:
+            mark_item = "\n> job: " + labels['job'] + '\n\n' + annotations + '\n'
+        else:
+            mark_item = "\n> " + annotations + '\n'
         return mark_item
 
     title = '%s 有 %d 条新的报警' % (alert_name, len(alerts))

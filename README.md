@@ -6,7 +6,7 @@ AlertManager 钉钉报警简单服务示例
 ## 运行
 ### 使用`Docker`运行
 ```shell
-$ docker run -p 5000:5000 --name -e ROBOT_TOKEN=<钉钉机器人TOKEN> -e ROBOT_SECRET=<钉钉机器人安全SECRET> -e LOG_LEVEL=debug -e PROME_URL=prometheus.local dingtalk-hook -d cnych/alertmanager-dingtalk-hook:v0.3.3
+$ docker run -p 5000:5000 --name -e ROBOT_TOKEN=<钉钉机器人TOKEN> -e ROBOT_SECRET=<钉钉机器人安全SECRET> -e LOG_LEVEL=debug -e PROME_URL=prometheus.local dingtalk-hook -d cnych/alertmanager-dingtalk-hook:v0.3.5
 ```
 
 环境变量配置：
@@ -44,7 +44,7 @@ spec:
     spec:
       containers:
       - name: dingtalk-hook
-        image: cnych/alertmanager-dingtalk-hook:v0.3.3
+        image: cnych/alertmanager-dingtalk-hook:v0.3.5
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5000
