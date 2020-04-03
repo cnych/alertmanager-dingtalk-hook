@@ -1,6 +1,5 @@
 FROM python:3.6.4
 
-# set working directory
 WORKDIR /src
 
 # add app

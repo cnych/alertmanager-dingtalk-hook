@@ -42,6 +42,7 @@ def send_alert(data):
     timestamp = int(round(time.time() * 1000))
     url = 'https://oapi.dingtalk.com/robot/send?access_token=%s&timestamp=%d&sign=%s' % (token, timestamp, make_sign(timestamp, secret))
 
+    status = data['status']
     alerts = data['alerts']
     alert_name = alerts[0]['labels']['alertname']
 
@@ -56,21 +57,27 @@ def send_alert(data):
             mark_item = annotations + '\n'
         return mark_item
 
-    title = '%s 有 %d 条新的报警' % (alert_name, len(alerts))
-
-    external_url = alerts[0]['generatorURL']
-    prometheus_url = os.getenv('PROME_URL')
-    if prometheus_url:
-        res = urlparse(external_url)
-        external_url = external_url.replace(res.netloc, prometheus_url)
-
-    send_data = {
-        "msgtype": "markdown",
-        "markdown": {
-            "title": title,
-            "text": title + "\n" + "![](https://bxdc-static.oss-cn-beijing.aliyuncs.com/images/prometheus-recording-rules.png)\n" + _mark_item(alerts[0]) + "\n" + "[点击查看完整信息](" + external_url + ")\n"
+    if status == 'resolved':  # 告警恢复
+        send_data = {
+            "msgtype": "text",
+            "text": {
+                "content": "报警 %s 已恢复" % alert_name
+            }
         }
-    }
+    else:
+        title = '%s 有 %d 条新的报警' % (alert_name, len(alerts))
+        external_url = alerts[0]['generatorURL']
+        prometheus_url = os.getenv('PROME_URL')
+        if prometheus_url:
+            res = urlparse(external_url)
+            external_url = external_url.replace(res.netloc, prometheus_url)
+        send_data = {
+            "msgtype": "markdown",
+            "markdown": {
+                "title": title,
+                "text": title + "\n" + "![](https://bxdc-static.oss-cn-beijing.aliyuncs.com/images/prometheus-recording-rules.png)\n" + _mark_item(alerts[0]) + "\n" + "[点击查看完整信息](" + external_url + ")\n"
+            }
+        }
 
     req = requests.post(url, json=send_data)
     result = req.json()

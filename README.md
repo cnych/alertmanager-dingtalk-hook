@@ -44,7 +44,7 @@ spec:
     spec:
       containers:
       - name: dingtalk-hook
-        image: cnych/alertmanager-dingtalk-hook:v0.3.5
+        image: cnych/alertmanager-dingtalk-hook:v0.3.6
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5000
